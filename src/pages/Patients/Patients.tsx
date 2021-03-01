@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { Container, Header, Main } from "./styles";
+import { Container, Header, Main } from './styles';
 
 const Patients: React.FC = ({}) => {
   const [form, setForm] = useState({
-    name: "",
-    email: "",
+    name: '',
+    email: '',
   });
 
   const [isEdit, setIsEdit] = useState(false);
@@ -18,18 +18,24 @@ const Patients: React.FC = ({}) => {
       </Header>
       <Main>
         <form onSubmit={() => {}}>
-          <h4>{isEdit ? "Editar" : "Cadastrar"}</h4>
-          <input type="text" placeholder="Nome" name="name" value={form.name} onChange={() => {}} />
+          <h4>{isEdit ? 'Editar' : 'Cadastrar'}</h4>
           <input
-            type="text"
-            placeholder="Email"
-            name="email"
+            type='text'
+            placeholder='Nome'
+            name='name'
+            value={form.name}
+            onChange={() => {}}
+          />
+          <input
+            type='text'
+            placeholder='Email'
+            name='email'
             value={form.email}
             onChange={() => {}}
           />
           <div>
             <button onClick={() => {}}>Limpar formulário</button>
-            <button type="submit">{isEdit ? "Editar" : "Cadastrar"}</button>
+            <button type='submit'>{isEdit ? 'Editar' : 'Cadastrar'}</button>
           </div>
         </form>
 

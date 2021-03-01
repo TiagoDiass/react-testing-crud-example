@@ -1,10 +1,10 @@
-import React from "react";
-import Patients from "./pages/Patients/Patients";
-import GlobalStyles from "./globalStyles";
+import React from 'react';
+import Patients from './pages/Patients/Patients';
+import GlobalStyles from './globalStyles';
 
 function App() {
   return (
-    <div className="App">
+    <div className='App'>
       <Patients />;
       <GlobalStyles />
     </div>
