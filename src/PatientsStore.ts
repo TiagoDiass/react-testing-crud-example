@@ -1,7 +1,12 @@
-import { makeAutoObservable } from 'mobx';
+import { action, observable } from 'mobx';
 import { requests } from './services';
 
-const { addPatientRequest, fetchPatients } = requests;
+const {
+  addPatientRequest,
+  fetchPatients,
+  editPatientRequest,
+  deletePatientRequest,
+} = requests;
 
 export type Patient = {
   id: number;
@@ -21,16 +26,13 @@ export type ActionResponse<T = any> = {
 };
 
 export class PatientsStore {
-  constructor() {
-    makeAutoObservable(this);
-  }
+  @observable patients: Patient[] = [];
 
-  patients: Patient[] = [];
+  @observable loading = false;
 
-  loading = false;
-
-  loadPatients = (): Promise<ActionResponse> =>
-    new Promise(async (resolve) => {
+  @action
+  loadPatients = (): Promise<ActionResponse> => {
+    return new Promise(async (resolve) => {
       this.loading = true;
 
       const response = await fetchPatients();
@@ -47,9 +49,11 @@ export class PatientsStore {
             : 'Houve um problema na requisição',
       });
     });
+  };
 
-  addPatient = (patient: PatientForm): Promise<ActionResponse> =>
-    new Promise(async (resolve) => {
+  @action
+  addPatient = (patient: PatientForm): Promise<ActionResponse> => {
+    return new Promise(async (resolve) => {
       this.loading = true;
 
       const response = await addPatientRequest(patient);
@@ -66,4 +70,50 @@ export class PatientsStore {
             : 'Houve um problema na requisição',
       });
     });
+  };
+
+  @action
+  editPatient = (
+    patientId: number,
+    patient: PatientForm
+  ): Promise<ActionResponse> => {
+    return new Promise(async (resolve) => {
+      this.loading = true;
+
+      const response = await editPatientRequest(patientId, patient);
+
+      this.loading = false;
+
+      this.loadPatients();
+
+      resolve({
+        status: response.status,
+        message:
+          response.status === 200
+            ? 'Usuário atualizado com sucesso'
+            : 'Houve um problema na requisição',
+      });
+    });
+  };
+
+  @action
+  deletePatient = (patientId: number): Promise<ActionResponse> => {
+    return new Promise(async (resolve) => {
+      this.loading = true;
+
+      const response = await deletePatientRequest(patientId);
+
+      this.loading = false;
+
+      this.loadPatients();
+
+      resolve({
+        status: response.status,
+        message:
+          response.status === 200
+            ? 'Usuário deletado com sucesso'
+            : 'Houve um problema na requisição',
+      });
+    });
+  };
 }

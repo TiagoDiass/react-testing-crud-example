@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
-import { PatientForm, PatientsStore } from '../../PatientsStore';
+import { Patient, PatientForm, PatientsStore } from '../../PatientsStore';
 
 import { Container, Header, Main } from './styles';
 
@@ -9,7 +9,14 @@ type Props = {
 };
 
 const Patients: React.FC<Props> = ({ patientsStore }) => {
-  const { patients, loading, loadPatients, addPatient } = patientsStore;
+  const {
+    patients,
+    loading,
+    loadPatients,
+    addPatient,
+    editPatient,
+    deletePatient,
+  } = patientsStore;
 
   const [form, setForm] = useState<PatientForm>({
     name: '',
@@ -29,7 +36,7 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
     }
 
     init();
-  }, []);
+  }, [loadPatients]);
 
   const handleFormClear = () => {
     setForm({
@@ -43,21 +50,19 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // if (isEdit) {
-    //   editRequest(currentEditId, form);
-    //   setForm({
-    //     name: '',
-    //     email: '',
-    //   });
+    if (isEdit) {
+      const response = await editPatient(currentEditId, form);
+      console.log(response);
+      setForm({
+        name: '',
+        email: '',
+      });
 
-    //   setIsEdit(false);
-    // } else {
-    //   addRequest(form);
-    // }
-
-    const response = await addPatient(form);
-
-    console.log(response);
+      setIsEdit(false);
+    } else {
+      const response = await addPatient(form);
+      console.log(response);
+    }
   };
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -67,24 +72,19 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
     });
   };
 
-  // const handleEditClick = (patient: Patient) => {
-  //   setForm({
-  //     ...patient,
-  //   });
+  const handleEditClick = (patient: Patient) => {
+    setForm({
+      ...patient,
+    });
 
-  //   setIsEdit(true);
-  //   setCurrentEditId(patient.id);
-  // };
+    setIsEdit(true);
+    setCurrentEditId(patient.id);
+  };
 
-  // const handleDeleteClick = (id: number) => {
-  //   const confirmation = confirm('Tem certeza que quer deletar este registro?');
-
-  //   if (confirmation) {
-  //     deleteRequest(id);
-  //   } else {
-  //     alert('Registro não foi deletado');
-  //   }
-  // };
+  const handleDeleteClick = async (id: number) => {
+    const response = await deletePatient(id);
+    console.log(response);
+  };
 
   return (
     <Container>
@@ -125,8 +125,12 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
                   <span>Nome: {patient.name}</span>{' '}
                   <span>Email: {patient.email}</span>
                   <div>
-                    <button onClick={() => {}}>Editar</button>
-                    <button onClick={() => {}}>Apagar</button>
+                    <button onClick={() => handleEditClick(patient)}>
+                      Editar
+                    </button>
+                    <button onClick={() => handleDeleteClick(patient.id)}>
+                      Apagar
+                    </button>
                   </div>
                 </li>
               ))
