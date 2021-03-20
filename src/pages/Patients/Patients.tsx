@@ -28,15 +28,13 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
 
   useEffect(() => {
     async function init() {
-      const response = await loadPatients();
-
-      if (response.status === 200) {
-        console.log(response);
-      }
+      await loadPatients();
     }
 
     init();
   }, [loadPatients]);
+
+  const isFormInvalid = !form.email || !form.name;
 
   const handleFormClear = () => {
     setForm({
@@ -95,6 +93,7 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
         <form onSubmit={handleFormSubmit}>
           <h4>{isEdit ? 'Editar' : 'Cadastrar'}</h4>
           <input
+            data-testid='name-input'
             type='text'
             placeholder='Nome'
             name='name'
@@ -102,6 +101,7 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
             onChange={handleInputChange}
           />
           <input
+            data-testid='email-input'
             type='text'
             placeholder='Email'
             name='email'
@@ -110,7 +110,14 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
           />
           <div>
             <button onClick={handleFormClear}>Limpar formulário</button>
-            <button type='submit'>{isEdit ? 'Editar' : 'Cadastrar'}</button>
+            <button
+              type='submit'
+              disabled={isFormInvalid}
+              data-testid='submit-button'
+              title={isFormInvalid ? 'Preencha os campos corretamente' : ''}
+            >
+              {isEdit ? 'Editar' : 'Cadastrar'}
+            </button>
           </div>
         </form>
 

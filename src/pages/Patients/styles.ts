@@ -60,8 +60,15 @@ export const Main = styled.main`
 
       button:nth-of-type(2) {
         background: #2980b9;
+
         &:hover {
           background: #2471a3;
+        }
+
+        &:disabled {
+          background: #2980b9 !important;
+          opacity: 0.8;
+          cursor: initial;
         }
       }
     }
