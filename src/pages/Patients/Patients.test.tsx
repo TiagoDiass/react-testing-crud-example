@@ -1,4 +1,4 @@
-import { render, RenderResult } from '@testing-library/react';
+import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { PatientsStore } from '../../PatientsStore';
 import Patients from './Patients';
 
@@ -33,6 +33,18 @@ class PatientsStoreSpy extends PatientsStore {
   };
 }
 
+// Helpers
+type FillFieldParams = {
+  sut: RenderResult;
+  fieldName: string;
+  value: string;
+};
+
+const fillField = ({ sut, fieldName, value }: FillFieldParams) => {
+  const inputElement = sut.getByTestId(`${fieldName}-input`);
+  fireEvent.input(inputElement, { target: { value } });
+};
+
 describe('Patients Page', () => {
   it('should start with initial state', () => {
     // Pegando o componente que a RTL renderizou para poder fazer os testes
@@ -48,6 +60,24 @@ describe('Patients Page', () => {
     expect(emailInput.value).toBe('');
     expect(submitButton.disabled).toBe(true);
     expect(submitButton.title).toBe('Preencha os campos corretamente');
+  });
+
+  it('should enable the submit button if form is valid', () => {
+    // Pegando o componente que a RTL renderizou para poder fazer os testes
+    const { sut } = makeSut();
+
+    // Obtendo o botão de submit
+    const submitButton = sut.getByTestId('submit-button') as HTMLButtonElement;
+
+    // Botão deve estar desabilitado pois inputs ainda estão sem valor
+    expect(submitButton.disabled).toBe(true);
+
+    // Preenchendo os campos
+    fillField({ sut, fieldName: 'name', value: 'Tiago Dias' });
+    fillField({ sut, fieldName: 'email', value: 'tiago@teste.com' });
+
+    // Botão não deve mais estar desabilitado
+    expect(submitButton.disabled).toBeFalsy();
   });
 
   it('should call loadPatients on page render', () => {
