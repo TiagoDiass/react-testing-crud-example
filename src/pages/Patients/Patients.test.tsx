@@ -80,6 +80,29 @@ describe('Patients Page', () => {
     expect(submitButton.disabled).toBeFalsy();
   });
 
+  it('should clean the form when user clicks on the clear button', () => {
+    const { sut } = makeSut();
+
+    const nameValue = 'Tiago Dias';
+    const emailValue = 'tiago@teste.com';
+
+    // Preenchendo os campos
+    fillField({ sut, fieldName: 'name', value: nameValue });
+    fillField({ sut, fieldName: 'email', value: emailValue });
+
+    const nameInput = sut.getByTestId('name-input') as HTMLInputElement;
+    const emailInput = sut.getByTestId('email-input') as HTMLInputElement;
+
+    expect(nameInput.value).toBe(nameValue);
+    expect(emailInput.value).toBe(emailValue);
+
+    const clearFormButton = sut.getByTestId('clear-form-button');
+    fireEvent.click(clearFormButton);
+
+    expect(nameInput.value).toBe('');
+    expect(emailInput.value).toBe('');
+  });
+
   it('should call loadPatients on page render', () => {
     const { patientsStoreSpy } = makeSut();
     expect(patientsStoreSpy.callsCount).toBe(1);

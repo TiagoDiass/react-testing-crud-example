@@ -109,7 +109,9 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
             onChange={handleInputChange}
           />
           <div>
-            <button onClick={handleFormClear}>Limpar formulário</button>
+            <button onClick={handleFormClear} data-testid='clear-form-button'>
+              Limpar formulário
+            </button>
             <button
               type='submit'
               disabled={isFormInvalid}
