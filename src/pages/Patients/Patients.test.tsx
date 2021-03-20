@@ -23,14 +23,12 @@ const makeSut = (): SutTypes => {
 class PatientsStoreSpy extends PatientsStore {
   callsCount = 0;
 
-  loadPatients = () => {
-    this.callsCount++;
+  loadPatients = jest.fn();
 
-    return Promise.resolve({
-      status: 200,
-      message: 'fake',
-    });
-  };
+  addPatient = jest.fn().mockResolvedValue({
+    status: 200,
+    message: 'Usuário adicionado com sucesso',
+  });
 }
 
 // Helpers
@@ -105,6 +103,24 @@ describe('Patients Page', () => {
 
   it('should call loadPatients on page render', () => {
     const { patientsStoreSpy } = makeSut();
-    expect(patientsStoreSpy.callsCount).toBe(1);
+    expect(patientsStoreSpy.loadPatients).toHaveBeenCalled();
+  });
+
+  it('should call addPatient with the correct parameters when user clicks on the submit button', () => {
+    const { sut, patientsStoreSpy } = makeSut();
+
+    const nameValue = 'Tiago Dias';
+    const emailValue = 'tiago@teste.com';
+
+    // Preenchendo os campos
+    fillField({ sut, fieldName: 'name', value: nameValue });
+    fillField({ sut, fieldName: 'email', value: emailValue });
+
+    const submitButton = sut.getByTestId('submit-button');
+    fireEvent.click(submitButton);
+    expect(patientsStoreSpy.addPatient).toHaveBeenCalledWith({
+      name: nameValue,
+      email: emailValue,
+    });
   });
 });

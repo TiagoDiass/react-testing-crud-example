@@ -58,8 +58,7 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
 
       setIsEdit(false);
     } else {
-      const response = await addPatient(form);
-      console.log(response);
+      await addPatient(form);
     }
   };
 
