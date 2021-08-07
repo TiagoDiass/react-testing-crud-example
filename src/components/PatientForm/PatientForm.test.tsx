@@ -22,7 +22,7 @@ const renderComponent = ({
   );
 };
 
-describe('xxxx', () => {
+describe('PatientForm component', () => {
   it('should render correctly if form is creating an user', () => {
     renderComponent({ isEdit: false });
 
