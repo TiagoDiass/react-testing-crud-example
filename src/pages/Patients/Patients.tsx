@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { Patient } from '../../@types';
+import PatientForm from '../../components/PatientForm/PatientForm';
 import { Container, Header, Main } from './styles';
 
 const Patients = () => {
@@ -24,7 +25,7 @@ const Patients = () => {
     setIsEdit(false);
   };
 
-  const handleFormSubmit = async (event: React.FormEvent) => {
+  const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
   };
 
@@ -50,40 +51,16 @@ const Patients = () => {
         <h1>React tests CRUD</h1>
       </Header>
       <Main>
-        <form onSubmit={handleFormSubmit}>
-          <h4>{isEdit ? 'Editar' : 'Cadastrar'}</h4>
-          <input
-            data-testid='name-input'
-            type='text'
-            placeholder='Nome'
-            name='name'
-            value={form.name}
-            onChange={handleInputChange}
-          />
-          <input
-            data-testid='email-input'
-            type='text'
-            placeholder='Email'
-            name='email'
-            value={form.email}
-            onChange={handleInputChange}
-          />
-          <div>
-            <button onClick={handleFormClear} data-testid='clear-form-button'>
-              Limpar formulário
-            </button>
-            <button
-              type='submit'
-              disabled={isFormInvalid}
-              data-testid='submit-button'
-              title={isFormInvalid ? 'Preencha os campos corretamente' : ''}
-            >
-              {isEdit ? 'Editar' : 'Cadastrar'}
-            </button>
-          </div>
-        </form>
+        <PatientForm
+          handleFormSubmit={handleFormSubmit}
+          handleInputChange={handleInputChange}
+          handleFormClear={handleFormClear}
+          form={form}
+          isEdit={isEdit}
+          isFormInvalid={isFormInvalid}
+        />
 
-        {true ? (
+        {false ? (
           <h2 style={{ alignSelf: 'center', marginTop: 12 }}>Carregando...</h2>
         ) : (
           <ul>
