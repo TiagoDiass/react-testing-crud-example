@@ -3,12 +3,12 @@ import { api } from '.';
 import { Patient } from '../@types';
 
 // Patients requests
-const fetchPatients = (): Promise<AxiosResponse<Patient[]>> => {
+const fetchPatientsRequest = (): Promise<AxiosResponse<Patient[]>> => {
   return api.get('/patients');
 };
 
 const addPatientRequest = (
-  patient: Patient
+  patient: Omit<Patient, 'id'>
 ): Promise<AxiosResponse<Patient>> => {
   return api.post('/patients/new', patient);
 };
@@ -24,9 +24,11 @@ const deletePatientRequest = (patientId: number): Promise<AxiosResponse> => {
   return api.delete(`/patients/${patientId}`);
 };
 
-export {
-  fetchPatients,
+const PatientsService = {
+  fetchPatientsRequest,
   addPatientRequest,
   editPatientRequest,
   deletePatientRequest,
 };
+
+export default PatientsService;

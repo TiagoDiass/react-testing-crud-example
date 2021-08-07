@@ -2,10 +2,12 @@ import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { Patient } from '../../@types';
 import PatientForm from '../../components/PatientForm/PatientForm';
+import PatientsService from '../../services/requests';
 import { Container, Header, Main } from './styles';
 
 const Patients = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -15,6 +17,18 @@ const Patients = () => {
   const [currentEditId, setCurrentEditId] = useState(0);
 
   const isFormInvalid = !form.email || !form.name;
+
+  async function fetchPatients() {
+    setIsLoading(true);
+    const response = await PatientsService.fetchPatientsRequest();
+
+    setPatients(response.data);
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
   const handleFormClear = () => {
     setForm({
@@ -27,6 +41,13 @@ const Patients = () => {
 
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    handleCreatePatient();
+  };
+
+  const handleCreatePatient = async () => {
+    await PatientsService.addPatientRequest(form);
+    await fetchPatients();
   };
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -60,13 +81,18 @@ const Patients = () => {
           isFormInvalid={isFormInvalid}
         />
 
-        {false ? (
-          <h2 style={{ alignSelf: 'center', marginTop: 12 }}>Carregando...</h2>
+        {isLoading ? (
+          <h2
+            data-testid='loading'
+            style={{ alignSelf: 'center', marginTop: 12 }}
+          >
+            Carregando...
+          </h2>
         ) : (
           <ul>
             {patients.length ? (
               patients.map((patient) => (
-                <li key={patient.id}>
+                <li data-testid='patient-list-item' key={patient.id}>
                   <span>ID: {patient.id}</span>{' '}
                   <span>Nome: {patient.name}</span>{' '}
                   <span>Email: {patient.email}</span>
@@ -74,6 +100,7 @@ const Patients = () => {
                     <button onClick={() => handleEditClick(patient)}>
                       Editar
                     </button>
+
                     <button>Apagar</button>
                   </div>
                 </li>
