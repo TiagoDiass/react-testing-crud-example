@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { api } from '.';
-import { Patient, PatientForm } from '../PatientsStore';
+import { Patient } from '../@types';
 
 // Patients requests
 const fetchPatients = (): Promise<AxiosResponse<Patient[]>> => {
@@ -8,14 +8,14 @@ const fetchPatients = (): Promise<AxiosResponse<Patient[]>> => {
 };
 
 const addPatientRequest = (
-  patient: PatientForm
+  patient: Patient
 ): Promise<AxiosResponse<Patient>> => {
   return api.post('/patients/new', patient);
 };
 
 const editPatientRequest = (
   patientId: number,
-  patient: PatientForm
+  patient: Patient
 ): Promise<AxiosResponse<Patient>> => {
   return api.put(`/patients/${patientId}`, patient);
 };

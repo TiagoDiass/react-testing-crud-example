@@ -1,38 +1,17 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
-import { Patient, PatientForm, PatientsStore } from '../../PatientsStore';
-
+import { Patient } from '../../@types';
 import { Container, Header, Main } from './styles';
 
-type Props = {
-  patientsStore: PatientsStore;
-};
-
-const Patients: React.FC<Props> = ({ patientsStore }) => {
-  const {
-    patients,
-    loading,
-    loadPatients,
-    addPatient,
-    editPatient,
-    deletePatient,
-  } = patientsStore;
-
-  const [form, setForm] = useState<PatientForm>({
+const Patients = () => {
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [form, setForm] = useState({
     name: '',
     email: '',
   });
 
   const [isEdit, setIsEdit] = useState(false);
   const [currentEditId, setCurrentEditId] = useState(0);
-
-  useEffect(() => {
-    async function init() {
-      await loadPatients();
-    }
-
-    init();
-  }, [loadPatients]);
 
   const isFormInvalid = !form.email || !form.name;
 
@@ -47,19 +26,6 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    if (isEdit) {
-      const response = await editPatient(currentEditId, form);
-      console.log(response);
-      setForm({
-        name: '',
-        email: '',
-      });
-
-      setIsEdit(false);
-    } else {
-      await addPatient(form);
-    }
   };
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -78,15 +44,10 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
     setCurrentEditId(patient.id);
   };
 
-  const handleDeleteClick = async (id: number) => {
-    const response = await deletePatient(id);
-    console.log(response);
-  };
-
   return (
     <Container>
       <Header>
-        <h1>React + Mobx + TypeScript CRUD</h1>
+        <h1>React tests CRUD</h1>
       </Header>
       <Main>
         <form onSubmit={handleFormSubmit}>
@@ -122,7 +83,7 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
           </div>
         </form>
 
-        {loading ? (
+        {true ? (
           <h2 style={{ alignSelf: 'center', marginTop: 12 }}>Carregando...</h2>
         ) : (
           <ul>
@@ -136,9 +97,7 @@ const Patients: React.FC<Props> = ({ patientsStore }) => {
                     <button onClick={() => handleEditClick(patient)}>
                       Editar
                     </button>
-                    <button onClick={() => handleDeleteClick(patient.id)}>
-                      Apagar
-                    </button>
+                    <button>Apagar</button>
                   </div>
                 </li>
               ))
